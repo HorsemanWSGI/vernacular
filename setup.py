@@ -6,6 +6,7 @@ setup(
     install_requires = [
         'frozendict',
         'pyhamcrest',
+        'polib',
     ],
     extras_require={
         'test': [
