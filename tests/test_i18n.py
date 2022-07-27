@@ -109,3 +109,10 @@ def test_plural(compiled_store):
         "Unable to find users: ${users}",
         2, mapping={'users': 'john, jane'}, target_language='fr')
     assert result == "Impossible de trouver les utilisateurs: john, jane"
+
+
+def test_translate_anything(compiled_store):
+    translate = Translator(compiled_store, default_domain='test').translate
+    assert translate('whatever') == 'whatever'
+    assert translate(1) == '1'
+    assert translate({1: 'toto'}) == "{1: 'toto'}"

@@ -26,23 +26,22 @@ class Translator:
         if not isinstance(phrase, i18nstr):
             phrase = i18nstr(
                 phrase,
-                domain=domain or phrase.domain,
+                domain=domain or self.default_domain,
                 mapping=mapping,
                 context=context,
                 default=default
             )
         else:
             phrase = phrase.replace(
-                domain=domain,
+                domain=domain or phrase.domain or self.default_domain,
                 mapping=mapping,
                 context=context,
                 default=default
             )
 
-        domain = phrase.domain or self.default_domain
         target_language = target_language or self.default_language
         translated = None
-        if trdomain := self.translations.get(domain):
+        if trdomain := self.translations.get(phrase.domain):
             translated = trdomain.lookup(phrase, target_language)
         if translated is None:
             translated = phrase.default
