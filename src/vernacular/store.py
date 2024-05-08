@@ -30,7 +30,10 @@ class Domain(t.Dict[str, Language]):
                 f'{self!r} can only contain translations from '
                 f'domain {self.domain}. Got {translation.domain}'
             )
-        tag = parse_locale(translation.locale)
+        try:
+            tag = parse_locale(translation.locale)
+        except ValueError:
+            return None
         if tag.language not in self:
             language = self[tag.language] = {}
         else:
