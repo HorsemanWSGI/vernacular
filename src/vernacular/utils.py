@@ -3,6 +3,8 @@ import re
 import logging
 import typing as t
 from pathlib import Path
+from langcodes import Language
+from langcodes.tag_parser import LanguageTagError
 
 
 Logger = logging.getLogger(__name__)
@@ -39,25 +41,29 @@ def compiled(pofile: Path, mofile: Path):
 
 
 def iter_translation_sources(root: Path):
-    for locale in root.iterdir():
-        if locale.is_dir():
-            messages_dir = locale / 'LC_MESSAGES'
+    for langtag in root.iterdir():
+        if langtag.is_dir():
+            messages_dir = langtag / 'LC_MESSAGES'
+            try:
+                tag = Language.get(langtag.stem).to_tag()
+            except LanguageTagError:
+                Logger.warning(f'{langtag.stem} is not a valid language.')
             for filename in messages_dir.iterdir():
                 if filename.suffix == '.po':
-                    yield locale.stem, filename
+                    yield tag, filename
 
 
 def iter_translation_files(root: Path, can_compile: bool = False):
     """Expects a classical gettext directory structure:
-        {root}/{locale}/LC_MESSAGES/{domain}.mo
+        {root}/{langtag}/LC_MESSAGES/{domain}.mo
     """
-    for locale, pofile in iter_translation_sources(root):
+    for tag, pofile in iter_translation_sources(root):
         mofile = pofile.with_suffix('.mo')
         if can_compile:
             if compiled(pofile, mofile) == mofile:
-                yield locale, mofile
+                yield tag, mofile
         elif mofile.exists():
-            yield locale, mofile
+            yield tag, mofile
         else:
             Logger.warning(
                 f'File {pofile} does not have a compiled version.')
