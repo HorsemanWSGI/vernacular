@@ -2,12 +2,6 @@ import typing as t
 from string import Template
 from vernacular.i18nstr import i18nstr
 from vernacular.store import Translations
-try:
-    from translationstring import TranslationString
-    translationstring_compat = True
-except:
-    TranslationString = None
-    translationstring_compat = False
 
 
 class Translator:
@@ -29,15 +23,8 @@ class Translator:
                   context=None,
                   default=None,
                   target_language=None):
-        if translationstring_compat and isinstance(phrase, TranslationString):
-            phrase = i18nstr(
-                str(phrase),
-                domain=phrase.domain or self.default_domain,
-                mapping=phrase.mapping,
-                context=phrase.context,
-                default=phrase.default
-            )
-        elif not isinstance(phrase, i18nstr):
+
+        if not isinstance(phrase, i18nstr):
             phrase = i18nstr(
                 phrase,
                 domain=domain or self.default_domain,
