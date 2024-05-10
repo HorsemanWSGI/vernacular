@@ -1,7 +1,7 @@
 import gettext
 import typing as t
 from pathlib import Path
-from vernacular.utils import parse_locale
+import langcodes
 
 
 class Translation(t.NamedTuple):
@@ -30,7 +30,10 @@ class Domain(t.Dict[str, Language]):
                 f'{self!r} can only contain translations from '
                 f'domain {self.domain}. Got {translation.domain}'
             )
-        tag = parse_locale(translation.locale)
+        try:
+            tag = langcodes.Language.get(translation.locale)
+        except ValueError:
+            return None
         if tag.language not in self:
             language = self[tag.language] = {}
         else:
@@ -39,7 +42,7 @@ class Domain(t.Dict[str, Language]):
         with translation.mofile.open('rb') as fp:
             catalog = gettext.GNUTranslations(fp=fp)
 
-        if tag.variant is not None:
+        if tag.territory is not None:
             if None not in language:
                 # we are creating a locale in this language but we have
                 # no root
@@ -51,25 +54,25 @@ class Domain(t.Dict[str, Language]):
                 root = language[None]
             catalog.add_fallback(root)
 
-        if tag.variant in language:
-            language[tag.variant]._catalog.update(catalog._catalog)
+        if tag.territory in language:
+            language[tag.territory]._catalog.update(catalog._catalog)
         else:
-            language[tag.variant] = catalog
+            language[tag.territory] = catalog
 
     def lookup(self, entry: str, language: str):
-        tag = parse_locale(language)
+        tag = langcodes.Language.get(language)
         if catalogs := self.get(tag.language):
             catalog = catalogs[None]
-            if tag.variant:
-                catalog = catalogs.get(tag.variant, catalog)
+            if tag.territory:
+                catalog = catalogs.get(tag.territory, catalog)
             return catalog.gettext(entry)
 
     def nlookup(self, singular: str, plural: str, num: int, language: str):
-        tag = parse_locale(language)
+        tag = langcodes.Language.get(language)
         if catalogs := self.get(tag.language):
             catalog = catalogs[None]
-            if tag.variant:
-                catalog = catalogs.get(tag.variant, catalog)
+            if tag.territory:
+                catalog = catalogs.get(tag.territory, catalog)
             return catalog.ngettext(singular, plural, num)
 
 

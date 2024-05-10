@@ -23,6 +23,7 @@ class Translator:
                   context=None,
                   default=None,
                   target_language=None):
+
         if not isinstance(phrase, i18nstr):
             phrase = i18nstr(
                 phrase,
