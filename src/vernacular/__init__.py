@@ -29,7 +29,7 @@ def from_entrypoints(
         key: str = 'vernacular.translation_directory'):
     translations = Translations()
     eps = entry_points()
-    if (i18n_defs := eps.get(key)) is not None:
+    if (i18n_defs := eps.select(group=key)) is not None:
         for definition in i18n_defs:
             if restrict and not restrict.matches(definition.name):
                 continue

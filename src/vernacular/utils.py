@@ -6,26 +6,6 @@ from pathlib import Path
 
 
 Logger = logging.getLogger(__name__)
-language_matcher = re.compile(r'^([a-z]{2,3})(?:[-_]([A-Z]{2,3}))?$')
-
-
-class LanguageTag(t.NamedTuple):
-    language: str
-    variant: t.Optional[str] = None
-
-    @property
-    def locale(self):
-        if not self.variant:
-            return self.language
-        return f'{self.language}-{self.variant}'
-
-
-def parse_locale(locale: str) -> LanguageTag:
-    matched = language_matcher.match(locale)
-    if matched is None:
-        raise ValueError(f'Invalid language code: {locale}')
-    language, variant = matched.groups()
-    return LanguageTag(language=language, variant=variant)
 
 
 def compiled(pofile: Path, mofile: Path):
