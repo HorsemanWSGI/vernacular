@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vernacular"
+version = "0.4"
+license = {text = "BSD-3-Clause"}
+authors = [{name = "Novareto GmbH & Souheil Chelfouh", email = "trollfot@gmail.com"}]
+maintainers = [{name = "Souheil Chelfouh", email = "trollfot@gmail.com"}]
+classifiers = [
+  "Environment :: Web Environment",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Topic :: Software Development :: Internationalization"
+]
+description = "Internationalization components"
+readme = {file = "README.rst", content-type = "text/x-rst"}
+requires-python = ">=3.11"
+dependencies = [
+  "frozendict",
+  "langcodes",
+  "polib",
+  "pyhamcrest"
+]
+
+[project.urls]
+"Source Code" = "https://github.com/HorsemanWSGI/vernacular.git"
+
+[project.optional-dependencies]
+test = [
+  "pytest"
+]
+
+[project.entry-points."vernacular.translation_directory"]
+test_translations = "vernacular:translations_test_folder"
