@@ -70,7 +70,7 @@ def test_i18str_mapping():
     with pytest.raises(TypeError):
         word.mapping['age'] = 18
 
-    new_word = word.replace(mapping={"name": "Rose"})
+    new_word = word.rebind(mapping={"name": "Rose"})
     assert new_word.mapping == {'name': 'Rose'}
     assert new_word is not word
     assert word == new_word

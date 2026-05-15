@@ -38,7 +38,7 @@ def from_entrypoints(
             for translation in i18_files():
                 translations.add(translation)
                 Logger.debug(
-                    f"Loading i18n registration: {translation}."
+                    "Loading i18n registration: %s", translation
                 )
     return translations
 

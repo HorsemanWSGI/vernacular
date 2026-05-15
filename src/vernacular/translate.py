@@ -33,7 +33,7 @@ class Translator:
                 default=default
             )
         else:
-            phrase = phrase.replace(
+            phrase = phrase.rebind(
                 domain=domain or phrase.domain or self.default_domain,
                 mapping=mapping,
                 context=context,

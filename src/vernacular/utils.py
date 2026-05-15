@@ -1,8 +1,7 @@
-import polib
-import re
 import logging
-import typing as t
 from pathlib import Path
+
+import polib
 from langcodes import Language
 from langcodes.tag_parser import LanguageTagError
 
@@ -34,7 +33,7 @@ def compiled(pofile: Path, mofile: Path):
             po = polib.pofile(pofile)
             po.save_as_mofile(mofile)
         except (IOError, OSError) as e:
-            logging.warn('Error while compiling %s (%s).' % (pofile, e))
+            Logger.warning("Error while compiling %s (%s).", (pofile, e))
             raise
 
     return mofile
@@ -47,7 +46,7 @@ def iter_translation_sources(root: Path):
             try:
                 tag = Language.get(langtag.stem).to_tag()
             except LanguageTagError:
-                Logger.warning(f'{langtag.stem} is not a valid language.')
+                Logger.warning('%s is not a valid language.', langtag.stem)
             for filename in messages_dir.iterdir():
                 if filename.suffix == '.po':
                     yield tag, filename
